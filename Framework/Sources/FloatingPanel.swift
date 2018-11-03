@@ -44,6 +44,7 @@ class FloatingPanel: NSObject, UIGestureRecognizerDelegate, UIScrollViewDelegate
 
     private var animator: UIViewPropertyAnimator?
     private var initialFrame: CGRect = .zero
+    private var initialOffsetY: CGFloat = 0
     private var transOffsetY: CGFloat = 0
     private var interactionInProgress: Bool = false
 
@@ -221,8 +222,11 @@ class FloatingPanel: NSObject, UIGestureRecognizerDelegate, UIScrollViewDelegate
         switch panGesture {
         case scrollView?.panGestureRecognizer:
             guard let scrollView = scrollView else { return }
+            if panGesture.state == .began {
+                initialOffsetY = scrollView.contentOffset.y
+            }
             if surfaceView.frame.minY > layoutAdapter.topY {
-                scrollView.contentOffset.y = scrollView.contentOffsetZero.y
+                scrollView.contentOffset.y = initialOffsetY
             }
         case panGesture:
             let translation = panGesture.translation(in: panGesture.view!.superview)
